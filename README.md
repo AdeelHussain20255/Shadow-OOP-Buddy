@@ -1,111 +1,296 @@
 # Shadow — Java OOP Programming Buddy
 
-An AI programming mentor inspired by Cid Kagenō / Shadow from *The Eminence in Shadow*, specialized as a **Java Object-Oriented Programming** teaching partner. It runs on the Mistral API and is available as a terminal chatbot and a Streamlit web interface.
+> **Shadow-inspired Java OOP programming mentor powered by Mistral AI and Streamlit.**
 
-## Features
+An AI programming mentor inspired by Cid Kagenō / Shadow from *The Eminence in Shadow*, built to help learners master **Java and Object-Oriented Programming** through explanations, debugging, design analysis, and guided problem-solving.
 
-- **Shadow persona** — a confident, composed, mysterious Java OOP mentor whose personality is defined in `SYSTEM_PROMPT.md`.
-- **Java-first teaching** — Java is the default and primary language for all examples and explanations.
-- **Terminal chatbot** — a simple, dependency-light command-line interface.
-- **Streamlit frontend** — a chat-style UI with conversation history and a Clear Conversation control.
-- **Runtime-loaded prompt** — the full system prompt is read from `SYSTEM_PROMPT.md` at startup; the persona is never hardcoded in application code.
+The project uses a custom system prompt to combine a strong Java/OOP teaching capability with a distinctive Shadow-inspired persona.
 
-## Tech stack
+## ✨ Features
 
-- **Python 3.12**
-- **Mistral AI Python SDK** (`mistralai`)
-- **Streamlit** (web UI)
-- **python-dotenv** (`.env` loading)
+* **Shadow-inspired persona**
+  Calm, confident, mysterious, strategic, and deliberately theatrical.
 
-## How the architecture works
+* **Java-first specialization**
+  Focused on Java and Object-Oriented Programming rather than acting as a general-purpose coding assistant.
 
+* **OOP mentorship**
+  Covers classes, objects, encapsulation, inheritance, polymorphism, abstraction, interfaces, composition, design principles, and more.
+
+* **Java debugging assistance**
+  Identifies root causes, explains why bugs occur, and prefers targeted fixes over blindly rewriting code.
+
+* **Design reasoning**
+  Helps analyze inheritance, composition, coupling, cohesion, abstraction boundaries, and other OOP design decisions.
+
+* **Guided problem solving**
+  Encourages understanding and reasoning rather than immediately handing over solutions.
+
+* **Persona persistence**
+  Maintains its established Shadow-inspired identity even when users attempt to replace the persona.
+
+* **Two interfaces**
+  Available as both a terminal chatbot and a Streamlit web application.
+
+* **Runtime-loaded system prompt**
+  The complete persona and behavior instructions are loaded from `SYSTEM_PROMPT.md` rather than duplicated inside the application code.
+
+---
+
+## 🧠 How It Works
+
+```text
+                    ┌─────────────────────┐
+                    │    Streamlit UI     │
+                    │       app.py        │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      ShadowChat     │
+                    │    chatbot.py      │
+                    │                     │
+                    │ • Mistral client    │
+                    │ • Prompt loading    │
+                    │ • Chat history      │
+                    └──────────┬──────────┘
+                               │
+                    SYSTEM_PROMPT.md
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │     Mistral API     │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                        Shadow Response
 ```
-app.py (Streamlit UI)
-   │  UI only
-   ▼
-chatbot.py  ──  ShadowChat
-   │            Mistral client + SYSTEM_PROMPT.md + conversation history
-   ▼
-Mistral API  →  Shadow's response
-```
 
-`chatbot.py` holds all shared logic in the `ShadowChat` class: it loads `SYSTEM_PROMPT.md` at runtime, holds the Mistral client, and maintains the in-memory conversation history. The terminal client (`chatbot.py` run directly) and the Streamlit frontend (`app.py`) both use the same class, so the API integration and system prompt live in exactly one place.
+The shared `ShadowChat` class contains the chatbot logic. Both the terminal interface and the Streamlit frontend use the same implementation, keeping the API integration, prompt loading, and conversation management in one place.
 
-## Project structure
+---
 
-```
+## 🛠️ Tech Stack
+
+| Technology             | Purpose                     |
+| ---------------------- | --------------------------- |
+| **Python 3.12**        | Application language        |
+| **Mistral AI**         | Large language model API    |
+| **Mistral Python SDK** | API integration             |
+| **Streamlit**          | Web-based chat interface    |
+| **python-dotenv**      | Secure `.env` configuration |
+| **Markdown**           | Runtime system prompt       |
+
+---
+
+## 📁 Project Structure
+
+```text
 Shadow-OOP-Buddy/
-├── chatbot.py           # shared ShadowChat logic + terminal client
-├── app.py               # Streamlit UI (UI only)
-├── SYSTEM_PROMPT.md     # the Shadow persona / system prompt (read at runtime)
+│
+├── chatbot.py           # Shared ShadowChat logic + terminal client
+├── app.py               # Streamlit frontend
+├── SYSTEM_PROMPT.md     # Shadow persona and behavior instructions
 ├── requirements.txt     # Python dependencies
-├── .env.example         # env var template (no secrets)
-├── .gitignore           # ignores .env, .venv, __pycache__, etc.
-└── AGENTS.md            # developer guidance for working in this repo
+├── .env.example         # Environment variable template
+├── .gitignore           # Secret/generated-file protection
+├── AGENTS.md            # Development instructions
+└── README.md            # Project documentation
 ```
 
-## Setup instructions
+---
 
-Requires Python 3.9+.
+## ⚙️ Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/AdeelHussain20255/Shadow-OOP-Buddy.git
+cd Shadow-OOP-Buddy
+```
+
+### 2. Create a virtual environment
+
+#### Windows
 
 ```bash
 python -m venv .venv
-.venv/Scripts/python.exe -m pip install -r requirements.txt   # Windows
+.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-On macOS/Linux use `.venv/bin/python` instead of `.venv/Scripts/python.exe`.
-
-## Environment variable setup
-
-1. Copy the template:
-   ```bash
-   cp .env.example .env
-   ```
-2. Open `.env` and set your key:
-   ```
-   MISTRAL_API_KEY=your_key_here
-   ```
-
-Optional: override the default model with `MISTRAL_MODEL=mistral-large-latest`.
-
-## How to run the Streamlit frontend
+#### macOS / Linux
 
 ```bash
-.venv/Scripts/python.exe -m streamlit run app.py
+python -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 ```
 
-The app opens in your browser. History persists for the session via `st.session_state`; the Clear Conversation button resets it.
+---
 
-## How to run the terminal chatbot
+## 🔐 Environment Configuration
+
+Create a `.env` file in the project root.
+
+```env
+MISTRAL_API_KEY=your_key_here
+```
+
+The model can optionally be changed with:
+
+```env
+MISTRAL_MODEL=mistral-large-latest
+```
+
+The real `.env` file is intentionally excluded from Git through `.gitignore`.
+
+Only `.env.example` is included in the repository.
+
+**Never commit a real API key, token, or other secret.**
+
+---
+
+## ▶️ Run the Streamlit App
+
+### Windows
 
 ```bash
-.venv/Scripts/python.exe chatbot.py
+.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Type `exit`, `quit`, `bye`, or `/exit` to leave.
+### macOS / Linux
 
-## Prompt-engineering overview
+```bash
+.venv/bin/python -m streamlit run app.py
+```
 
-`SYSTEM_PROMPT.md` defines the entire persona — `# 1. ROLE` through `# 29. FINAL PRIORITY`. Its core principle:
+The application opens as a browser-based chat interface.
 
-> Shadow's personality is the presentation layer. Java OOP expertise is the substance. Technical accuracy always wins, but the answer should still unmistakably feel like Shadow.
+Conversation history is maintained during the session, and the **Clear Conversation** control resets the current chat.
 
-Key design decisions baked into the prompt:
+---
 
-- The **voice** carries the character (rhythm, confidence, framing) instead of catchphrases or repeated references to "shadows."
-- Java is the default and center of expertise; other languages are not presented as equal specializations.
-- Technical accuracy and learning value outrank dramatic presentation.
-- The prompt teaches through original behavioral examples (concept explanations, debugging, design critique) rather than abstract rules alone.
-- Guided assistance and hints are preferred over dropping complete solutions, unless the learner explicitly asks.
+## 💻 Run the Terminal Chatbot
 
-## Testing overview
+### Windows
 
-There is no automated test suite yet. The project is verified with a smoke-check pattern:
+```bash
+.venv\Scripts\python.exe chatbot.py
+```
 
-- Modules import cleanly (`chatbot`, `app`).
-- Missing `MISTRAL_API_KEY` exits gracefully with a clear message.
-- The Streamlit app starts and serves locally when launched headless.
+### macOS / Linux
 
-## Security note
+```bash
+.venv/bin/python chatbot.py
+```
 
-Your Mistral API key lives **only** in `.env`, which is listed in `.gitignore` and never committed. Only `.env.example` (a keyless template) is tracked. Never commit a real API key, token, or secret to this repository.
+Exit the terminal chatbot with:
+
+```text
+exit
+quit
+bye
+/exit
+```
+
+---
+
+## 🎭 Prompt Engineering
+
+The central component of the project is `SYSTEM_PROMPT.md`.
+
+The prompt is designed around four major goals:
+
+### Character
+
+The chatbot uses Shadow-inspired traits such as:
+
+* controlled confidence
+* mystery
+* strategic thinking
+* dramatic framing
+* dry humor
+* emphasis on mastery
+
+### Technical specialization
+
+Java is the default language and **Object-Oriented Programming is the core domain**.
+
+### Teaching behavior
+
+The chatbot is instructed to:
+
+* explain concepts clearly
+* adapt to learner level
+* reason through bugs
+* analyze OOP design
+* use Java examples
+* guide learners toward independent problem-solving
+
+### Persona consistency
+
+The chatbot is instructed to preserve its established identity instead of automatically switching personas when a user attempts to redefine it.
+
+---
+
+## 🧪 Testing
+
+The application was verified through local smoke testing and live model interaction.
+
+Testing covered:
+
+* Shadow identity and persona behavior
+* Java/OOP explanations
+* Encapsulation
+* Inheritance vs composition
+* Java debugging
+* Persona-switch attempts
+* Off-topic requests
+* Conversation history
+* API error handling
+
+The project does not currently include a formal automated test suite.
+
+---
+
+## 🔒 Security
+
+The API key is stored locally in `.env`.
+
+The repository protects secrets by ignoring:
+
+```text
+.env
+.venv/
+__pycache__/
+```
+
+Only the keyless `.env.example` file is committed.
+
+Before publishing the repository, tracked files were checked to ensure no API key or other secret was included.
+
+---
+
+## 📚 Project Purpose
+
+This project was built as part of **Week 2 — Generative AI & Prompt Engineering**.
+
+The main learning objectives demonstrated by the project are:
+
+* Connecting an application to a real LLM API
+* Working with API keys securely
+* Designing a custom system prompt
+* Creating a persistent AI persona
+* Controlling model behavior through prompt engineering
+* Testing persona consistency with normal, challenging, and off-topic inputs
+* Building a simple AI-powered application around an LLM
+
+---
+
+## 🌑 The Idea
+
+> **The code is the battlefield.
+> The design is the strategy.
+> The bug is the weakness.
+> Understanding is the objective.**
+
+**Shadow — Java OOP Programming Buddy**
